@@ -1,5 +1,6 @@
 package com.example.E_Note.Repository;
 
+import com.example.E_Note.DTO.CategoryDto;
 import com.example.E_Note.Entity.Category;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,11 @@ import java.util.function.Function;
 
 @Repository
 public class CategoryRepo implements JpaRepository<Category,Integer> {
+
+
+    public static List<Category> findByIsActiveTrue() {
+        return null;
+    }
 
     @Override
     public void flush() {
