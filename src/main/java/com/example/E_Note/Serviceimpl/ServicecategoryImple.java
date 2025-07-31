@@ -3,8 +3,10 @@ package com.example.E_Note.Serviceimpl;
 import com.example.E_Note.DTO.CategoryDto;
 import com.example.E_Note.DTO.CategoryResponse;
 import com.example.E_Note.Entity.Category;
+import com.example.E_Note.Exception.ResouceNotFoundException;
 import com.example.E_Note.Repository.CategoryRepo;
 import com.example.E_Note.Service.CategoryService;
+import com.example.E_Note.Utils.Validation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,17 @@ public class ServicecategoryImple implements CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private Validation validation;
 
     @Override
-    public Boolean saveCategory(Category category) {
+    public Boolean saveCategory(CategoryDto categoryDto) {
 //      category.setName(category.getName());
 //      category.setDescription(category.getDescription());
 //    modelMapper.map(CategoryDto,Category.class);
-
-    Category savecategory= categoryRepo.save(category);
+    validation.validationCheck(categoryDto);
+    Category category= modelMapper.map(categoryDto,Category.class);
+        Category savecategory= categoryRepo.save(category);
     if (ObjectUtils.isEmpty(savecategory)) {
     return false;
 }
@@ -49,9 +54,10 @@ public class ServicecategoryImple implements CategoryService {
     }
     @Override
     public CategoryDto getCategoryById(Integer id){
-      Optional<Category> findbycat=  categoryRepo.findById(id);
-      if(findbycat.isPresent()){
-        Category category=  findbycat.get();
+      Optional<Category> findbycat= Optional.ofNullable(categoryRepo.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new ResouceNotFoundException("Categorty not found with id" + id)));
+      if(!ObjectUtils.isEmpty(findbycat)){
+          return modelMapper.map(findbycat,CategoryDto.class);
+        //Category category=  findbycat.get();
 //          return modelMapper.map(Category,CategoryDto.class);
       }
       return null;
