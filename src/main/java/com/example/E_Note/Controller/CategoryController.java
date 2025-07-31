@@ -23,7 +23,7 @@ public class CategoryController {
 
 
     @PostMapping("/save-category")
-    public ResponseEntity saveCategory(@RequestBody Category categorydto) {
+    public ResponseEntity saveCategory(@RequestBody CategoryDto categorydto) {
         Boolean savecategory = servicecategoryImple.saveCategory(categorydto);
         if (savecategory) {
             return new ResponseEntity("savecategory", HttpStatus.CREATED);
